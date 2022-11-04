@@ -9,27 +9,30 @@ import javax.persistence.Id;
 
 @Entity
 public class Payment {
-	public Payment(Long id, Long cardId, BigDecimal price, String bankResponse) {
-		this.id = id;
-		this.cardId = cardId;
-		this.price = price;
-		this.bankResponse = bankResponse;
-	}
-	public Payment() {
-		
-	}
 	
 	@Id
 	@GeneratedValue
 	private Long id;
 
 	@Column
-	private Long cardId;
-	@Column
 	private BigDecimal price;
 	@Column
 	private String bankResponse;
-	
+
+	@Column(name = "cc_id")
+	private Long cardId;
+
+	public Payment(){
+
+	}
+
+	public Payment(Long id, BigDecimal price, String bankResponse, Long cardId) {
+		this.id = id;
+		this.price = price;
+		this.bankResponse = bankResponse;
+		this.cardId = cardId;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -53,11 +56,12 @@ public class Payment {
 	public void setBankResponse(String bankResponse) {
 		this.bankResponse = bankResponse;
 	}
+
 	public Long getCardId() {
 		return cardId;
 	}
+
 	public void setCardId(Long cardId) {
 		this.cardId = cardId;
 	}
-	
 }

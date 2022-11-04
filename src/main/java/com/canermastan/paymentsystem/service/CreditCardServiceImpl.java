@@ -3,6 +3,7 @@ package com.canermastan.paymentsystem.service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 
 import com.canermastan.paymentsystem.core.results.DataResult;
@@ -25,10 +26,10 @@ public class CreditCardServiceImpl implements CreditCardService{
 	@Override
 	public DataResult<CreditCard> save(CreditCardDto creditCartDto) {
 		CreditCard creditCard = new CreditCard();
-		creditCard.setCcv(creditCartDto.getCcv());
-		creditCard.setExpMonth(creditCartDto.getExpMonth());
-		creditCard.setExpYear(creditCartDto.getExpYear());
-		creditCard.setNumber(creditCartDto.getNumber());
+		creditCard.setCcv(DigestUtils.sha256Hex(creditCartDto.getCcv()));
+		creditCard.setExpMonth(DigestUtils.sha256Hex(creditCartDto.getExpMonth()));
+		creditCard.setExpYear(DigestUtils.sha256Hex(creditCartDto.getExpYear()));
+		creditCard.setNumber(DigestUtils.sha256Hex(creditCartDto.getNumber()));
 		
 		creditCard.setAmount(BigDecimal.valueOf(8000.0));
 		
@@ -41,16 +42,13 @@ public class CreditCardServiceImpl implements CreditCardService{
 	}
 
 	@Override
-	public DataResult<CreditCard> findById(Long id) {
-		if(creditCardRepository.findById(id).isPresent()) {
-			return new SuccessDataResult<CreditCard>(creditCardRepository.findById(id).get());
-		}
-		return new ErrorDataResult<CreditCard>("Cart bulunamadı.");
+	public CreditCard findByNumber(String number) {
+		return creditCardRepository.findByNumber(DigestUtils.sha256Hex(number));
 	}
 
 	@Override
-	public void decreaseAmount(BigDecimal price, Long cardId) {
-		creditCardRepository.decreaseAmount(price, cardId);
+	public void decreaseAmount(BigDecimal price, String cardNumber) {
+		creditCardRepository.decreaseAmount(price, cardNumber);
 	}
 
 }

@@ -3,12 +3,12 @@ package com.canermastan.paymentsystem.service;
 import java.math.BigDecimal;
 import java.util.concurrent.CompletableFuture;
 
+import com.canermastan.paymentsystem.exception.ProductNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
-import com.canermastan.paymentsystem.entity.CreditCard;
 import com.canermastan.paymentsystem.entity.Product;
 import com.canermastan.paymentsystem.entity.dto.ProductPaymentDto;
 import com.canermastan.paymentsystem.exception.OutOfStockException;
@@ -33,6 +33,10 @@ public class PaymentServiceImpl implements PaymentService {
 
 		Product product = productService.findById(productPaymentDto.getProductId());
 
+		if(product == null) {
+			throw new ProductNotFoundException("Product not found");
+		}
+
 		int quantity = productPaymentDto.getQuantity();
 		if (!product.checkStockQuantity(quantity)) {
 			throw new OutOfStockException("Invalid stock number");
@@ -40,22 +44,10 @@ public class PaymentServiceImpl implements PaymentService {
 
 		int currentStock = product.getStock() - quantity;
 		try {
-			CreditCard c = creditCardService.findById(productPaymentDto.getCardId()).getData();
-			if (product.getPrice().multiply(BigDecimal.valueOf(quantity))
-					.compareTo(c.getAmount()) == 1) {
-
-				throw new Exception("Kart tutarı yetersiz.");
-			}
-
 			productService.updateStock(product.getId(), currentStock);
 			BigDecimal price = product.getPrice().multiply(new BigDecimal(quantity));
 
-			creditCardService.decreaseAmount((product.getPrice().multiply(BigDecimal.valueOf(quantity))), productPaymentDto.getCardId());
-
-			System.out.println(product.getName() + "'den " + quantity + "adet " + productPaymentDto.getCardId()
-					+ "kartından alınmıştır. Tutar: " + product.getPrice());
-			
-			return paymentServiceClients.call(price, productPaymentDto.getCardId());
+			return paymentServiceClients.call(price, productPaymentDto.getCreditCardDto());
 		} catch (ObjectOptimisticLockingFailureException opEx) {
 			throw new Exception(
 					"Optimistic Lock : The record you attempted to edit was modified by another user after you got the original value");

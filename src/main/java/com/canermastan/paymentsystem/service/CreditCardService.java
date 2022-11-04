@@ -11,7 +11,7 @@ import com.canermastan.paymentsystem.entity.dto.CreditCardDto;
 public interface CreditCardService {
 	DataResult<CreditCard> save(CreditCardDto creditCartDto);
 	DataResult<List<CreditCard>> findAll();
-	DataResult<CreditCard> findById(Long id);
+	CreditCard findByNumber(String number);
 	
-	void decreaseAmount(BigDecimal price, Long cardId);
+	void decreaseAmount(BigDecimal price, String cardNumber);
 }

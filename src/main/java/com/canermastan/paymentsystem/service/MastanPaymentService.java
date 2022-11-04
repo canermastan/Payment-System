@@ -2,6 +2,8 @@ package com.canermastan.paymentsystem.service;
 
 import java.math.BigDecimal;
 
+import com.canermastan.paymentsystem.entity.dto.CreditCardDto;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,25 +20,27 @@ public class MastanPaymentService {
 	private Logger logger = LoggerFactory.getLogger(MastanPaymentService.class);
 
 	private BankService bankService;
+	private CreditCardService creditCardService;
 	private PaymentRepository paymentRepository;
 
-	public MastanPaymentService(BankService bankService, PaymentRepository paymentRepository) {
+	public MastanPaymentService(BankService bankService, CreditCardService creditCardService, PaymentRepository paymentRepository) {
 		this.bankService = bankService;
+		this.creditCardService = creditCardService;
 		this.paymentRepository = paymentRepository;
 	}
 
 	@Transactional
-	public void pay(BigDecimal price, Long cardId) {
+	public void pay(BigDecimal price, CreditCardDto creditCardDto) throws Exception {
 		// pay with bank
-		BankPaymentRequest request = new BankPaymentRequest();
-		request.setPrice(price);
+		BankPaymentRequest request = new BankPaymentRequest(price, creditCardDto);
 		BankPaymentResponse response = bankService.pay(request);
 
 		// insert records
 		Payment payment = new Payment();
 		payment.setBankResponse(response.getResultCode());
+		payment.setCardId(creditCardService.findByNumber(creditCardDto.getNumber()).getId());
 		payment.setPrice(price);
-		payment.setCardId(cardId);
+		// payment.setCardNumber(cardNumber);
 		paymentRepository.save(payment);
 		logger.info("Payment saved successfully!");
 	}

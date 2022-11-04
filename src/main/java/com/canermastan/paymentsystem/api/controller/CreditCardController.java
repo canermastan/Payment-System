@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.canermastan.paymentsystem.core.results.SuccessDataResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,10 +36,9 @@ public class CreditCardController {
 	public DataResult<CreditCard> save(@Valid @RequestBody CreditCardDto creditCardDto){
 		return creditCardService.save(creditCardDto);
 	}
-	
-	@GetMapping("/{id}")
-	public DataResult<CreditCard> findById(@PathVariable Long id){
-		return creditCardService.findById(id);
+
+	@GetMapping("/{number}")
+	public CreditCard findByNumber(@PathVariable String number){
+		return creditCardService.findByNumber(number);
 	}
-	
 }
