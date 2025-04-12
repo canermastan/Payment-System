@@ -1,94 +1,94 @@
-# Ödeme Sistemi
+# Payment System
 
-Bu proje, ArkSigner "T.C. Kimlik Kartı Ve Yüz Tanıma Teknolojileri İle Mobilde Ödeme Hackathon Etkinliği" için hazırlanmış bir Ödeme Sistemidir. Ödeme, kredi kartı bilgileri ve ürün yönetimi için RESTful API'ler içerir. Uygulama Spring Boot kullanılarak geliştirilmiştir ve ödeme işlemleri, kredi kartı bilgileri yönetimi ve ürün bilgilerini yönetme gibi işlevler sunar.
+This project is a Payment System prepared for the ArkSigner "Payment on Mobile with T.C. Identity Card and Face Recognition Technologies Hackathon Event". It includes RESTful APIs for payment processing, credit card information management, and product management. The application is developed using Spring Boot and provides functionalities such as payment processing, credit card information management, and product information management.
 
+## Features
 
-
-## Özellikler
-
-- **Ödeme İşlemleri**: Kullanıcıların ürünler için ödeme yapmasını sağlar.
-- **Kredi Kartı Yönetimi**: Kredi kartı bilgilerini ekleme, alma ve listeleme işlemlerini destekler.
-- **Ürün Yönetimi**: Ürün bilgilerini oluşturma, güncelleme ve alma işlemlerini destekler.
+- **Payment Processing**: Allows users to make payments for products.
+- **Credit Card Management**: Supports adding, retrieving, and listing credit card information.
+- **Product Management**: Supports creating, updating, and retrieving product information.
 
 ## Endpoints
 
-### Ödeme
+### Payment
 
 - **POST /api/payments**
-    - Ürün için ödeme işlemi gerçekleştirir.
-    - **İstek Gövdesi**:
-      ```json
-      {
-        "productId": 1,
-        "creditCardDto": {
-        "number": "1234567890123456",
-        "expMonth": "12",
-        "expYear": "2025",
-        "ccv": "123"
-        },
-        "quantity": 2
-      }
-      ```
-    - **Yanıt**: Ödeme sonucu.
+   - Processes payment for a product.
+   - **Request Body**:
+     ```json
+     {
+       "productId": 1,
+       "creditCardDto": {
+         "number": "1234567890123456",
+         "expMonth": "12",
+         "expYear": "2025",
+         "ccv": "123"
+       },
+       "quantity": 2
+     }
+     ```
+   - **Response**: Payment result.
 
-### Kredi Kartı
+### Credit Card
 
 - **GET /api/cc/get-all**
-    - Tüm saklanan kredi kartı bilgilerini alır.
+   - Retrieves all saved credit card information.
 - **POST /api/cc**
-    - Yeni bir kredi kartı ekler.
-    - **İstek Gövdesi**:
-      ```json
-      {
-        "number": "1234567890123456",
-        "expMonth": "12",
-        "expYear": "2025",
-        "ccv": "123"
-      }
-      ```
-    - **Yanıt**: Kaydedilen kredi kartı bilgileri.
+   - Adds a new credit card.
+   - **Request Body**:
+     ```json
+     {
+       "number": "1234567890123456",
+       "expMonth": "12",
+       "expYear": "2025",
+       "ccv": "123"
+     }
+     ```
+   - **Response**: Saved credit card details.
 - **GET /api/cc/{number}**
-    - Kredi kartı numarasına göre kredi kartı bilgilerini alır.
+   - Retrieves credit card information by card number.
 
-### Ürün
+### Product
 
 - **GET /api/products/get-all**
-    - Tüm ürünleri alır.
+   - Retrieves all products.
 - **POST /api/products**
-    - Yeni bir ürün ekler.
-    - **İstek Gövdesi**:
-      ```json
-      {
-        "name": "Ürün Adı",
-        "description": "Ürün Açıklaması",
-        "stock": 100,
-        "price": 99.99
-      }
-      ```
-    - **Yanıt**: Kaydedilen ürün detayları.
+   - Adds a new product.
+   - **Request Body**:
+     ```json
+     {
+       "name": "Product Name",
+       "description": "Product Description",
+       "stock": 100,
+       "price": 99.99
+     }
+     ```
+   - **Response**: Saved product details.
 - **PUT /api/products/{id}**
-    - Var olan bir ürünü günceller.
-    - **İstek Gövdesi**:
-      ```json
-      {
-        "name": "Güncellenmiş Ürün Adı",
-        "description": "Güncellenmiş Ürün Açıklaması",
-        "stock": 100,
-        "price": 99.99
-      }
-      ```
-    - **Yanıt**: Güncellenmiş ürün detayları.
+   - Updates an existing product.
+   - **Request Body**:
+     ```json
+     {
+       "name": "Updated Product Name",
+       "description": "Updated Product Description",
+       "stock": 100,
+       "price": 99.99
+     }
+     ```
+   - **Response**: Updated product details.
 
-## Kurulum
+## Installation
 
-1. **Repository'i Klonlayın**:
+1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/kullaniciadi/payment-system.git
+   git clone https://github.com/username/payment-system.git
    cd payment-system
+   ```
 
-2. **Uygulamayı Çalıştırın**:
-- Java 17'nin kurulu olduğundan emin olun.
-- Maven kullanarak uygulamayı çalıştırın:
-``` bash
+2. **Run the Application**:
+   - Ensure Java 17 is installed.
+   - Run the application using Maven:
+
+```bash
 ./mvnw spring-boot:run
 ```
